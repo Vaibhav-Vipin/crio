@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Crio Event Bubbling</title>
+        <style>
+            .box {
+                padding: 20px;
+                margin: 10px;
+                border: 2px solid black;
+            }
+            #outer {
+                background-color: #f8d7da;
+            }
+            #middle {
+                background-color: #d1ecf1;
+            }
+            #inner {
+                background-color: #d4edda;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Click the innermost box to see event bubbling</h2>
+
+        <!-- Checkbox to control if bubbling stops -->
+        <!--<label>-->
+        <!--    <input type="checkbox" id="stopProp" />-->
+        <!--    Stop propagation on Inner Box-->
+        <!--</label>-->
+
+        <div id="outer" class="box">
+            Outer Box
+            <div id="middle" class="box">
+                Middle Box
+                <div id="inner" class="box">
+                    Inner Box (Click Me)
+                </div>
+            </div>
+        </div>
+
+        <!--Log area with Clear Log button -->
+        <!--<button id="clearButton">Clear Log</button>-->
+        <!--<div id="log" style="margin-top: 20px; padding: 10px; border: 1px dashed #333; height: 150px; overflow: auto;">-->
+        <!--    <strong>Event Log:</strong>-->
+        <!--    <ul id="logList"></ul>-->
+        <!--</div>-->
+
+        <script>
+            // Utility function to log messages
+            function logMessage(message) {
+                const logList = document.getElementById("logList");
+                const listItem = document.createElement("li");
+                listItem.textContent = message;
+                logList.appendChild(listItem);
+            }
+
+            // Handler function for bubbling events
+            function handleEvent(event) {
+                // Get the id of the current element handling the event
+                const currentElement = event.currentTarget.id;
+                logMessage(`Event handled at: ${currentElement}`);
+            }
+
+            // Handler for inner element that optionally stops event propagation
+            function handleInner(event) {
+                logMessage("Inner Box clicked");
+                //   // Check if the checkbox is checked to stop propagation
+                //   const stopCheckbox = document.getElementById('stopProp');
+                //   if (stopCheckbox.checked) {
+                //     logMessage("Propagation stopped at Inner Box");
+                //     event.stopPropagation();
+                //   }
+            }
+
+            // Add event listeners to the boxes
+            const outerBox = document.getElementById("outer");
+            const middleBox = document.getElementById("middle");
+            const innerBox = document.getElementById("inner");
+
+            outerBox.addEventListener("click", () => {
+                console.log("outerBox was clicked");
+            });
+
+            middleBox.addEventListener("click", () => {
+                console.log("middleBox was clicked");
+            });
+
+            innerBox.addEventListener("click", () => {
+                // Following function is used to stop event bubbling
+                //event.stopPropagation()
+                console.log("innerBox was clicked");
+            });
+
+            // Event Capture
+            // outerBox.addEventListener('click', () => {
+            //   console.log("outerBox was clicked");
+            // }, true);
+
+            // middleBox.addEventListener('click', () => {
+            //   console.log("middleBox was clicked");
+            // }, true);
+            // innerBox.addEventListener('click', (event) => {
+            //   console.log("innerBox was clicked");
+            //   // To stop propagation during capture phase:
+            //   // event.stopPropagation();
+            // }, true);
+
+            // // Attach one event listener on the outer container
+            // outerBox.addEventListener('click', function(event) {
+            //   // Determine the actual element that was clicked
+            //   const target = event.target;
+
+            //   // Check if it was the inner box
+            //   if (target === innerBox) {
+            //     console.log("Inner box clicked");
+            //   }
+            //   // Check if it was the middle box
+            //   else if (target === middleBox) {
+            //     console.log('Middle box clicked');
+            //   }
+            //   // If it was the outer box (and not one of its children)
+            //   else if (target === outerBox) {
+            //     console.log('Outer box clicked');
+            //   }
+            // });
+
+            // const outerBox = document.getElementById('outer');
+
+            // ["outer", "middle", "inner"].forEach((id) => {
+            //   const el = document.getElementById(id);
+            //   el.addEventListener("click", () => {
+            //     el.style.backgroundColor = "lightgreen";
+            //     setTimeout(() => {
+            //       el.style.backgroundColor = "";
+            //     }, 300);
+            //   });
+            // });
+
+            // outerBox.addEventListener('click', handleEvent );
+            // middleBox.addEventListener('click', handleEvent);
+            // innerBox.addEventListener('click', handleInner);
+
+            // Also log the bubbling event from inner element to show full propagation path
+            // innerBox.addEventListener('click', handleEvent);
+
+            // Clear log functionality
+            // const clearButton = document.getElementById('clearButton');
+            // clearButton.addEventListener('click', function() {
+            //   const logList = document.getElementById('logList');
+            //   logList.innerHTML = ''; // Clear all log entries
+            // });
+        </script>
+    </body>
+</html>
