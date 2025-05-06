@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Grocery List Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    #app {
+      max-width: 400px;
+      margin: auto;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    input, button {
+      padding: 8px;
+      margin: 5px 0;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      background: #f9f9f9;
+      padding: 10px;
+      margin: 5px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mark {
+      background-color: lightgreen;
+    }
+
+    .delete {
+      background-color: tomato;
+    }
+
+    .modal {
+      background: lightblue;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h2>Grocery List</h2>
+    <input type="text" id="itemInput" placeholder="Add item..." />
+    <button id="addItemBtn">Add</button>
+
+    <ul id="groceryList">
+      <!-- List items will appear here -->
+    </ul>
+  </div>
+
+  <script>
+    const groceryList = document.getElementById('groceryList');
+    const addItemBtn = document.getElementById('addItemBtn');
+    const itemInput = document.getElementById('itemInput');
+    const appDiv = document.getElementById('app');
+
+    // Input validator using capturing phase
+    addItemBtn.addEventListener('click', (e) => {
+      const value = itemInput.value.trim();
+      if (value.length < 3) {
+        e.stopPropagation();
+        alert('Item name must be at least 3 characters long.');
+        console.log('Validation failed — propagation stopped in capturing phase');
+      }
+    }, true); // Capturing phase
+
+    // Add new item
+    addItemBtn.addEventListener('click', () => {
+      const value = itemInput.value.trim();
+      if (!value) return;
+
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${value}</span>
+        <div>
+          <button class="mark">Mark as Bought</button>
+          <button class="delete">Delete</button>
+        </div>
+      `;
+      groceryList.appendChild(li);
+      itemInput.value = '';
+    });
+
+    // Event delegation: handle list item clicks
+    groceryList.addEventListener('click', function (event) {
+      const target = event.target;
+
+      if (target.classList.contains('mark')) {
+        target.closest('li').style.textDecoration = 'line-through';
+        console.log('Item marked as bought');
+      } else if (target.classList.contains('delete')) {
+        target.closest('li').remove();
+        console.log('Item deleted');
+      }
+    });
+
+    // Demonstrate bubbling (default) and capturing
+    appDiv.addEventListener(
+      'click',
+      () => {
+        console.log('App Div clicked — Bubbling phase');
+      },
+      false // bubbling
+    );
+
+    appDiv.addEventListener(
+      'click',
+      () => {
+        console.log('App Div clicked — Capturing phase');
+      },
+      true // capturing
+    );
+
+    // Example of stopPropagation with modal
+    addItemBtn.addEventListener('dblclick', () => {
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.textContent = 'This is a modal (click to close). Bubbling is stopped here.';
+
+      modal.addEventListener('click', (e) => {
+        e.stopPropagation();
+        console.log('Modal clicked — event.stopPropagation() used.');
+        modal.remove();
+      });
+
+      document.body.appendChild(modal);
+    });
+  </script>
+</body>
+</html>
